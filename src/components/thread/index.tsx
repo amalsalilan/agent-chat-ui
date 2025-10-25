@@ -45,6 +45,7 @@ import {
   ArtifactTitle,
   useArtifactContext,
 } from "./artifact";
+import { AgentSelector } from "../agent-selector";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -256,7 +257,11 @@ export function Thread() {
   );
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div className="flex h-screen w-full flex-col overflow-hidden">
+      {/* Agent Selector - Always visible at top */}
+      <AgentSelector />
+      
+      <div className="flex flex-1 overflow-hidden">
       <div className="relative hidden lg:flex">
         <motion.div
           className="absolute z-20 h-full overflow-hidden border-r bg-white"
@@ -559,6 +564,7 @@ export function Thread() {
             <ArtifactContent className="relative flex-grow" />
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

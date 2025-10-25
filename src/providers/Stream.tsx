@@ -24,6 +24,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { getApiKey } from "@/lib/api-key";
 import { useThreads } from "./Thread";
 import { toast } from "sonner";
+import { useAgent } from "./agent-provider";
 
 export type StateType = { messages: Message[]; ui?: UIMessage[] };
 
@@ -133,6 +134,9 @@ const DEFAULT_ASSISTANT_ID = "agent";
 export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  // Get selected agent from context
+  const { selectedAgent } = useAgent();
+
   // Get environment variables
   const envApiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL;
   const envAssistantId: string | undefined =
@@ -157,9 +161,10 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
     _setApiKey(key);
   };
 
-  // Determine final values to use, prioritizing URL params then env vars
+  // Determine final values to use
+  // Priority: selectedAgent > URL param > env var
   const finalApiUrl = apiUrl || envApiUrl;
-  const finalAssistantId = assistantId || envAssistantId;
+  const finalAssistantId = selectedAgent || assistantId || envAssistantId;
 
   // Show the form if we: don't have an API URL, or don't have an assistant ID
   if (!finalApiUrl || !finalAssistantId) {
@@ -268,6 +273,7 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
       apiKey={apiKey}
       apiUrl={apiUrl}
       assistantId={assistantId}
+      key={finalAssistantId}
     >
       {children}
     </StreamSession>
